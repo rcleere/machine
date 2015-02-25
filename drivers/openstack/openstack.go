@@ -729,7 +729,7 @@ func (d *Driver) waitForSSHServer() error {
 		"MachineId": d.MachineId,
 		"IP":        ip,
 	}).Debug("Waiting for the SSH server to be started...")
-	return ssh.WaitForTCP(fmt.Sprintf("%s:%d", ip, d.SSHPort))
+	return ssh.WaitForSSH(ip, d.SSHPort, d.SSHUser, d.sshKeyPath())
 }
 
 func (d *Driver) waitForInstanceToStart() error {

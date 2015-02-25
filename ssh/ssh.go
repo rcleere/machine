@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"time"
 
 	log "github.com/Sirupsen/logrus"
 )
@@ -69,6 +70,22 @@ func WaitForTCP(addr string) error {
 		}
 		defer conn.Close()
 		if _, err = conn.Read(make([]byte, 1)); err != nil {
+			continue
+		}
+		break
+	}
+	return nil
+}
+
+func WaitForSSH(host string, port int, user string, sshKey string) error {
+	sshArgs := []string{
+		"-o", "ConnectTimeout=5",
+		"true",
+	}
+	for {
+		sshCmd := GetSSHCommand(host, port, user, sshKey, sshArgs...)
+		if err := sshCmd.Run(); err != nil {
+			time.Sleep(5 * time.Second)
 			continue
 		}
 		break
